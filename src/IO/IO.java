@@ -5,9 +5,9 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
 public class IO {
-
 	
 	public void IO(){
 		
@@ -24,9 +24,20 @@ public class IO {
 		return sb.toString();
 	}
 	
-	public void writeFile(String filePath, String hex) throws IOException{
+	public void writeFile(String filePath, List<byte[]> toWrite) throws IOException{
+		int instructionLength = 4;
 		BufferedWriter bw = new BufferedWriter(new FileWriter(filePath));
-		bw.write(filePath);
+		byte[] finalWrite = new byte[toWrite.size() * instructionLength]; 
+		int index = 0;
+		for (byte[] bs : toWrite) {
+			for (byte b : bs) {
+				finalWrite[index] = b;
+				index++;
+			}
+		}
+		bw.write(finalWrite.toString());
+		bw.flush();
+		bw.close();
 	}
 	
 

@@ -8,18 +8,25 @@ import IO.IO;
 
 public class Assembler {
 
-	public static void main(String[] args) throws IOException {
-		Assembler a = new Assembler();
-		a.convertFile();
-	}
-	//will have string paramater to take in file path
-	public void convertFile() throws IOException{
-		List<byte[]> wholeFile = new ArrayList<byte[]>();
+	
+	public void executeAssembler(String filePathIn, String filePathOut) throws IOException{
+		//change so input goes into file path
+		//"Assembly/TestAssembly.txt"
+		
+		List<byte[]> toWrite = convertFile(filePathIn);
 		IO io = new IO();
-		String file = io.readFile("Assembly/TestAssembly.txt");
+		io.writeFile(filePathOut, toWrite);
+	}
+	
+	//will have string paramater to take in file path
+	public List<byte[]> convertFile(String filePath) throws IOException{
+		List<byte[]> byteFile = new ArrayList<byte[]>();
+		IO io = new IO();
+		String file = io.readFile(filePath);
 		String[] lines = file.split("\\n");
 		
 		for (String lin : lines) {
+			BinaryConverter bc = new BinaryConverter();
 			String[] command = lin.split(" ");
 			byte[] inst = new byte[4];
 			String com = command[0];
@@ -27,109 +34,111 @@ public class Assembler {
 			case "LOAD":{
 				inst[0] = 1; 
 				inst[1] = assignRegister(command[1]);
-				
-				
-
+				byte[] address = bc.intConversion(Integer.valueOf(command[2]));
+				inst[2] = address[0];
+				inst[3] = address[1];
+				byteFile.add(inst);
 				break;
 			}
 			case "LOADC":{
-				one = "0a";
-				two = assignRegister(command[1]);
-				
-				
-
+				inst[0] = 10;
+				inst[1] = assignRegister(command[1]);
+				byte[] address = bc.intConversion(Integer.valueOf(command[2]));
+				inst[2] = address[0];
+				inst[3] = address[1];
+				byteFile.add(inst);
 				break;
 			}
 			case "STORE":{
-				one = "02";
-				
-				
-				four = assignRegister(command[3]);
-				
+				inst[0] = 2;
+				byte[] address = bc.intConversion(Integer.valueOf(command[1]));
+				inst[1] = address[0];
+				inst[2] = address[1];
+				inst[3] = assignRegister(command[3]);
+				byteFile.add(inst);
 				break;
 			}
 			case "ADD":{
-				one = "03";
-				two = assignRegister(command[1]);
-				three = assignRegister(command[2]);
-				four = assignRegister(command[3]);
-				
+				inst[0] = 3;
+				inst[1] = assignRegister(command[1]);
+				inst[2] = assignRegister(command[2]);
+				inst[3] = assignRegister(command[3]);
+				byteFile.add(inst);
 				break;
 			}
 			case "SUB":{
-				one = "04";
-				two = assignRegister(command[1]);
-				three = assignRegister(command[2]);
-				four = assignRegister(command[3]);
-
+				inst[0] = 4;
+				inst[1] = assignRegister(command[1]);
+				inst[2] = assignRegister(command[2]);
+				inst[3] = assignRegister(command[3]);
+				byteFile.add(inst);
 				break;
 			}
 			case "MUL":{
-				one = "05";
-				two = assignRegister(command[1]);
-				three = assignRegister(command[2]);
-				four = assignRegister(command[3]);
-
+				inst[0] = 5;
+				inst[1] = assignRegister(command[1]);
+				inst[2] = assignRegister(command[2]);
+				inst[3] = assignRegister(command[3]);
+				byteFile.add(inst);
 				break;
 			}
 			case "DIV":{
-				one = "06";
-				two = assignRegister(command[1]);
-				three = assignRegister(command[2]);
-				four = assignRegister(command[3]);
-
+				inst[0] = 6;
+				inst[1] = assignRegister(command[1]);
+				inst[2] = assignRegister(command[2]);
+				inst[3] = assignRegister(command[3]);
+				byteFile.add(inst);
 				break;
 			}
 			case "EQ":{
-				one = "07";
-				two = assignRegister(command[1]);
-				three = assignRegister(command[2]);
-				four = assignRegister(command[3]);
-
+				inst[0] = 7;
+				inst[1] = assignRegister(command[1]);
+				inst[2] = assignRegister(command[2]);
+				inst[3] = assignRegister(command[3]);
+				byteFile.add(inst);
 				break;
 			}
 			case "GOTO":{
-				one = "08";
-				
-				
-				four = null;
-
+				inst[0] = 8;
+				byte[] address = bc.intConversion(Integer.valueOf(command[1]));
+				inst[1] = address[0];
+				inst[2] = address[1];
+				byteFile.add(inst);
 				break;
 			}
 			case "GOTOIF":{
-				one = "0b";
-				
-				
-				four = assignRegister(command[3]);
-
+				inst[0] = 11;
+				byte[] address = bc.intConversion(Integer.valueOf(command[1]));
+				inst[1] = address[0];
+				inst[2] = address[1];
+				inst[3] = assignRegister(command[3]);
+				byteFile.add(inst);
 				break;
 			}
 			case "CPRINT":{
-				one = "09";
-				
-				
-				
-
+				inst[0] = 9;
+				byte[] address = bc.intConversion(Integer.valueOf(command[1]));
+				inst[1] = address[0];
+				inst[2] = address[1];
+				byteFile.add(inst);
 				break;
 			}
 			case "CREAD":{
-				one = "10";
-				
-				
-				
-
+				inst[0] = 16;
+				byte[] address = bc.intConversion(Integer.valueOf(command[1]));
+				inst[1] = address[0];
+				inst[2] = address[1];
+				byteFile.add(inst);
 				break;
 			}
 			case "EXIT":{
-				one = "11";
-				two = null;
-				three = null;
-				four = null;
-
+				inst[0] = 17;
+				byteFile.add(inst);
 				break;
 			}
 			}
 		}
+		return byteFile;
 	}
 
 	public byte assignRegister(String reg){
@@ -149,6 +158,8 @@ public class Assembler {
 		}
 		return ret;
 	}
+	
+	
 
 
 }
