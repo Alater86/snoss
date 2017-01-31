@@ -4,25 +4,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import IO.IO;
-
 public class Assembler {
-
 	
-	public void executeAssembler(String filePathIn, String filePathOut) throws IOException{
-		//change so input goes into file path
-		//"Assembly/TestAssembly.txt"
-		
-		List<byte[]> toWrite = convertFile(filePathIn);
-		IO io = new IO();
-		io.writeFile(filePathOut, toWrite);
-	}
-	
-	//will have string paramater to take in file path
-	public List<byte[]> convertFile(String filePath) throws IOException{
+	public List<byte[]> convertFile(String assembly) throws IOException{
 		List<byte[]> byteFile = new ArrayList<byte[]>();
-		IO io = new IO();
-		String file = io.readFile(filePath);
+		String file = assembly;
 		String[] lines = file.split("\\n");
 		
 		for (String lin : lines) {
